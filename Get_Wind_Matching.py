@@ -11,11 +11,15 @@ from pyproj import Proj, Geod
 import os
 from collections import OrderedDict
 import zipfile
-from cStringIO import StringIO
 from dateutil.parser import parse
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+try:
+	from cStringIO import StringIO
+except:
+	from io import BytesIO as StringIO
+
 
 global BaseTime 
 BaseTime = parse('2013-01-01 00:00:00')
@@ -128,7 +132,7 @@ def PrepareWind(wind_file = os.getcwd() + '/WIND_NCAR/wind2.zip', grid_file = os
 	                pass
 	            u_wind.append(wind_data[key][:,0])
 	            v_wind.append(wind_data[key][:,1])
-	levels = wind_data.keys()
+	levels = sorted(list(wind_data.keys()), reverse = True)
 	u_wind = np.array(u_wind)
 	v_wind = np.array(v_wind)
 	TimeIdxTree = cKDTree(np.array(TimeIdx).reshape(-1,1))
@@ -183,6 +187,11 @@ class WindMatching:
 			self.u_wind, self.v_wind, self.TimeIdxTree, self.Grid_KDTree, self.Levels, self.Grid = PrepareWind(file_location_dict['wind_file'], 
 																					   file_location_dict['grid_file'],
 																					   Save = True)
+		self.level_idx_dict = {}
+		i = -1
+		for key in self.Levels:
+		    i += 1
+		    self.level_idx_dict[key] = i
 
 		self.LabelData, self.CenterTraj = self.LoadTraj()
 
@@ -192,12 +201,6 @@ class WindMatching:
 		VTrack = pd.read_csv(VTrackPath, parse_dates=[6])
 		LabelData = pd.read_csv(os.getcwd() + '/TFMS_NEW/Label_' + self.DEP+'_' + self.ARR+ '_' + str(self.Year) + '.csv', parse_dates=[6])
 		CenterTraj = VTrack[VTrack.FID.isin(LabelData[LabelData.MedianID != -2].FID.values)].reset_index(drop = 1)
-
-		self.level_idx_dict = {}
-		i = -1
-		for key in self.Levels:
-		    i += 1
-		    self.level_idx_dict[key] = i
 
 		print('Finished')
 		return LabelData, CenterTraj
