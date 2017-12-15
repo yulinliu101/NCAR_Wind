@@ -1,3 +1,25 @@
+# Download NCAR_WIND
+1. Go to this link: http://rda.ucar.edu/datasets/ds090.0/
+
+2. Click on the DATA ACCESS tab (second tab from left)
+
+3. Click the "Internet Download Files" link.
+
+4. Click "Dynamic List" link.
+
+5. In Temporal (Valid Time) Selection, enter the date range for which you want the wind files.
+
+6. Select the checkboxes: u-component of wind, v-component of wind, and Pressure
+
+In the Subset Selection combo box, select "2.5 degree analyses on 17 pressure
+
+levels, plus other surfaces and layers (pgb.f00)
+
+7. Click the "Create List" button. You get a list of files in GRIB 1 format that can be downloaded either individually (one for each month) or collectively as a tar file
+
+8. (if date range spans multiple months). Individual file names will look like: A23202-0801.pgb.f00, where 0801 is January 2008.
+
+
 # NCAR_Wind
 Decode NCAR wind data and match with trajectories
 
